@@ -33,26 +33,26 @@ export class RecognitionScene extends BaseScene implements IUpdatable {
   world: CANNON.World;
   controllers: Controllers;
   clock: Clock;
-  textMesh: Mesh;
-  textMesh2: Mesh;
   font: Font;
+  textMeshes: { [id: string]: Mesh | null };
 
   initialize(parentElement: HTMLElement) {
     super.initialize(parentElement);
 
+    this.textMeshes = { left: null, right: null };
     let controls = new OrbitControls(this.camera, parentElement);
     controls.target.set(0, 1.6, 0);
     controls.update();
 
     this.controllers.hands.left?.controllable.addEventListener(
       "gesture_changed",
-      (evt) => this.setText(evt.gesture || " ", 0)
+      (evt) => this.setText(evt.gesture || " ", "left")
     );
     this.controllers.hands.right?.controllable.addEventListener(
       "gesture_changed",
-      (evt) => this.setText(evt.gesture || " ", 1)
+      (evt) => this.setText(evt.gesture || " ", "right")
     );
-    this.setText("Hands VR", 1);
+    this.setText("Hands VR", "right");
   }
 
   update(): void {
@@ -65,9 +65,8 @@ export class RecognitionScene extends BaseScene implements IUpdatable {
     this.renderer.render(this.scene, this.camera);
   }
 
-  setText(text: string, id: number): void {
-    if (id == 0) if (this.textMesh != null) this.scene.remove(this.textMesh);
-    if (id == 1) if (this.textMesh2 != null) this.scene.remove(this.textMesh2);
+  setText(text: string, id: string): void {
+    if (this.textMeshes[id] != null) this.scene.remove(this.textMeshes[id]!);
 
     let textGeo = new TextGeometry(text, {
       font: this.font,
@@ -85,24 +84,20 @@ export class RecognitionScene extends BaseScene implements IUpdatable {
       new MeshPhongMaterial({ color: 0xffffff }), // side
     ];
 
-    let textMesh = new Mesh(textGeo, fontMaterials);
+    let textHolder = new Mesh(textGeo, fontMaterials);
 
-    textMesh.position.x = centerOffset - ((id == 0) ? 0.5 : -0.5);
-    textMesh.position.y = 1;
-    textMesh.position.z = -2;
+    textHolder.position.x = centerOffset - (id === "left" ? 0.5 : -0.5);
+    textHolder.position.y = 1;
+    textHolder.position.z = -2;
 
-    textMesh.rotation.x = 0;
-    textMesh.rotation.y = Math.PI * 2;
+    textHolder.rotation.x = 0;
+    textHolder.rotation.y = Math.PI * 2;
 
-    textMesh.lookAt(this.camera.position);
+    textHolder.lookAt(this.camera.position);
 
-    if (id == 0) {
-      this.textMesh = textMesh;
-      this.scene.add(this.textMesh);
-    }else{
-      this.textMesh2 = textMesh;
-      this.scene.add(this.textMesh2);
-    }
+    this.textMeshes[id] = textHolder;
+
+    this.scene.add(this.textMeshes[id]!);
   }
 
   public static create(controllerFeatures: EControllerFeatures) {

@@ -1,14 +1,14 @@
 import { Vector3 } from "three";
 import IUpdatable from "../../common/IUpdatable";
-import { HandGestureRecognization } from "./handGestureRecognization/handGestureRecognization";
+import { HandGestureRecognition } from "./handGestureRecognization/HandGestureRecognition";
 import { OCHand } from "../core/OCHand";
 
 export default class HandGestureRecognizer implements IUpdatable {
   hand: OCHand;
-  gestureRecognization: HandGestureRecognization;
+  gestureRecognization: HandGestureRecognition;
   _currentRecognizedGesture: string | null;
 
-  constructor(hand: OCHand, gestureRecognization: HandGestureRecognization) {
+  constructor(hand: OCHand, gestureRecognization: HandGestureRecognition) {
     this.hand = hand;
     this.gestureRecognization = gestureRecognization;
   }
@@ -43,7 +43,7 @@ export default class HandGestureRecognizer implements IUpdatable {
       this.currentGesture = isRecognized ? gesture : null;
   }
 
-  public static create(hand: OCHand, recognization: HandGestureRecognization) {
+  public static create(hand: OCHand, recognization: HandGestureRecognition) {
     return new HandGestureRecognizer(hand, recognization);
   }
 }

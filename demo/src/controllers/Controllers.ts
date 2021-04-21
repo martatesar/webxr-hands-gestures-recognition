@@ -3,7 +3,7 @@ import * as CANNON from "cannon-es";
 import { XRHandModelFactory } from "three/examples/jsm/webxr/XRHandModelFactory.js";
 import { WebGLRenderer } from "three";
 import { Object3D } from "three";
-import { HandGestureRecognization } from "./features/handGestureRecognization/handGestureRecognization";
+import { HandGestureRecognition } from "./features/handGestureRecognization/HandGestureRecognition";
 import { OCHand } from "./core/OCHand";
 import { HandsPhysic } from "./features/HandsPhysic";
 import { OCController } from "./core/OCControler";
@@ -116,7 +116,7 @@ export class Controllers implements IUpdatable {
     ) {
       this.gestureRecognizer.left = HandGestureRecognizer.create(
         this.hands.left,
-        HandGestureRecognization.CreateDefault(ControllerType.Left)
+        HandGestureRecognition.CreateDefault(ControllerType.Left)
       );
       this.addToUpdatables(this.gestureRecognizer.left);
     }
@@ -127,7 +127,7 @@ export class Controllers implements IUpdatable {
     ) {
       this.gestureRecognizer.right = HandGestureRecognizer.create(
         this.hands.right,
-        HandGestureRecognization.CreateDefault(ControllerType.Right)
+        HandGestureRecognition.CreateDefault(ControllerType.Right)
       );
       this.addToUpdatables(this.gestureRecognizer.right);
     }
